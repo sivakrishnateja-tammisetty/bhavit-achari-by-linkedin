@@ -1,0 +1,29 @@
+1. Compilation process
+
+2. nm a.out ->for symbol tables
+
+3. nm a.out --demangle -> for demangling
+  
+4. extern "C" in cpp code in fun -> for not demangling
+  
+5. c++filt symboltable_fun -> It will give exact function declaration
+
+6.ldd a.out  ->It tells which all are libraries linked with your library(ldd means list dynamic dependices)
+
+
+
+
+
+------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+
+                                                                 7 commands every c/c++ programmer should know
+
+
+1. gcc -fPIC -shared hello.cpp -o libhello.so
+   >>ls
+     lihello.so ........
+   >>g++  main.cpp -lhello -L.
+   
+2. file executablefilename(a.out) or anyfile  ->It will give information about executable file
+
+3. gdb -tui exec_file -> It enables GDB in text user interface
