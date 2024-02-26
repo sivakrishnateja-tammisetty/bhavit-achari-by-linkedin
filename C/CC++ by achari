@@ -189,7 +189,9 @@ NOTE:private is like marked as private for compilation purpose,so it does not me
 -----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 
 
-                                                                 7 commands every c/c++ programmer should know
+                                                                 These commands every c/c++ programmer should know
+
+
 
 *Every C/C++ programmer should know these 7 Commands, especially those who are working on Linux with C/C++
 
@@ -237,6 +239,104 @@ NOTE:private is like marked as private for compilation purpose,so it does not me
 7. objdum a.out -d ->we can we assembly code for all our executables.
 
 8.valgrind ./a.out ->It is a programming tool for memory debugging,memory leak detection, and profiling.
+
+           sudo apt install valgrind ->To install valgrind
+
+
+
+
+--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+
+                                                                     Learn & understand cmake 
+
+
+
+*sudo apt install cmake   --> To install cmake.
+
+*cmake --version   -->To check the version of cmake.
+
+Eg:
+
+1.add.h:
+------
+
+int add(int,int);
+
+2.add.cpp:
+-------
+
+#include "add.h"
+int add(int a,int b)
+{
+    return a+b;
+}
+
+3.main.cpp:
+---------
+
+#include"add.h"
+#include<iostream>
+int main()
+{
+    cout<<"Sum of 3 and 7 is:"<<add(3,7)<<endl;
+    return 0;
+}
+
+4.Create CMakeLists.txt (file):
+-----------------------------
+cmake_minimum_required(VERSION 3.22.1)
+project("Any name for the project")
+add_executable(a.out main.cpp add.cpp)
+
+
+
+
+step 5:     ls
+------
+     add.cpp add.h main.cpp   CMakeLists.txt
+
+ 
+step6: 
+--------
+
+                  >>mkdir build
+                  >>ls
+                  add.cpp add.h  build CMakeLists.txt main.cpp
+                 >>cd build/
+                 >>cmake ..
+                 >>ls
+                    CMakeCache.txt CMakeFiles cmake_install.cmake Makefile
+                 >>make
+                >>./a.out
+
+
+o/p:Sum of 3 and 7 is :10
+
+
+
+
+
+                             ANother way
+                           --------------
+
+*rm -rf build/
+*cmake -B build
+*ls 
+   add.cpp add.h build  CMakeLists.txt  main.cpp
+*cd build/
+*ls
+    CMakeCache.txt  CMakeFiles cmake_install.cmake  Makefile
+
+*./build/a.out
+  o/p:sum of 3 and 7 is 10
+
+
+            
+
+
+
+
+
 
 
 
