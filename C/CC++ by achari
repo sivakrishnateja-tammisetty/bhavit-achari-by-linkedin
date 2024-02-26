@@ -1,29 +1,244 @@
-1. Compilation process
+1. Compilation process:
+------------------------
 
-2. nm a.out ->for symbol tables
 
-3. nm a.out --demangle -> for demangling
+* gcc -E main.cpp -> for (.i) file
+*gcc -S main.i  ->It will return  assembly code for my archiecture.
+*uname -a ->for knowing the archiecture
+* gcc -c main.s ->Basically it will return an object file.
+*ldd a.out  -> We will see what are all list dependency libraries(ldd->list dynamic dependices).
+
+
+
+*gcc hello.cpp -> The C compiler can also compile C++ code.
+
+
+
+
+Eg:
+#include<iostream>
+using namespace std;
+int main()
+{
+    cout<<"Hello World!";
+    return 0;
+}
+
+
+IN TERMINAL:
+damner@codedamn:/home/damner/code$ g++ -E hello.cpp >hello.i
+damner@codedamn:/home/damner/code$ g++ -S hello.i
+damner@codedamn:/home/damner/code$ g++ -c hello.s
+damner@codedamn:/home/damner/code$ g++ hello.o
+damner@codedamn:/home/damner/code$ ./a.out
+
+Hello World!
+damner@codedamn:/home/damner/code$ ldd a.out
+        linux-vdso.so.1 (0x00007ffcd1f65000)                                         --->It means provide optimized mechanism for making certain sytem calls directly from user space without need of full context switching
+        libstdc++.so.6 => /lib/x86_64-linux-gnu/libstdc++.so.6 (0x00007f0b8260f000)   --->standard c++ library
+        libc.so.6 => /lib/x86_64-linux-gnu/libc.so.6 (0x00007f0b823e6000 )            ---->C library
+        libm.so.6 => /lib/x86_64-linux-gnu/libm.so.6 (0x00007f0b822ff000)         -->math library
+        /lib64/ld-linux-x86-64.so.2 (0x00007f0b82848000)                          -->Dynamic linker of loader it plays crucial role in the execution of  dynamically linked programs.responsible for loading shared libs,resolving symbols,,setting u runtime enviroment for a program before its  execution.
+        libgcc_s.so.1 => /lib/x86_64-linux-gnu/libgcc_s.so.1 (0x00007f0b822df000) -->provide low level support for certain operations that are necessary for execution of program generated  by GCC.
+
+
+
+
+
+
+
+2. nm a.out       -> This command wii print  symbol tables 
+
+
+  In c:
+ -----
+         gcc hello.c
+          nm a.out 
+       Here function names will not change,because "name mangling" concept was not present in C.
+
+In C++:
+-------
+         g++ hello.cpp
+         nm a.out
+        Here,in symbol table,except main function every function name should change,because of concept "name mangling " in c++.
+
+
+
+
+
+
+
+
   
-4. extern "C" in cpp code in fun -> for not demangling
-  
-5. c++filt symboltable_fun -> It will give exact function declaration
+3. c++filt symboltable_fun  ->It will give proper definition of the function.
 
-6.ldd a.out  ->It tells which all are libraries linked with your library(ldd means list dynamic dependices)
-
-
+        In terminal:     c++filt _z3addid
+        -----------
+                           add(int,double)
 
 
 
-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+4. nm a.out --demangle     ->In syymbol table functions are  not name mangling,it will give proper definition.
+
+                       In terminal :  nm a.out --demangle
+                       ------------
+
+
+                      In symboltable:
+                      ---------------
+                                  add(int,double) 
+
+
+
+
+5. extern "C"   ->It will avoid name mangling in symbol table.
+
+Eg:
+
+#include<iostream>
+using namespace std;
+extern "C" int add(int x,int y)
+{
+    return x+y;
+}
+/*
+template<class T>
+T add(T x,T y)
+{
+    return x+y;
+}
+*/
+int main()
+{
+    cout<<"Hello World!";
+    return 0;
+}
+
+
+
+
+
+
+6. objdump analysis:
+   -----------------
+
+    objdump -S a.out -> It will like reverse engineering,write assembly code for every function.
+
+
+
+ 
+7.Release mode & Debug mode:
+  -------------------------- 
+
+
+ *stripping of our executable is called "release node".
+ *Non-stripped version of executable is called "Debug mode".
+ 
+
+Eg: >>ls -lah a.out  
+         16k --file size
+    >>g++ hello.cpp -g3
+    >>ls -lah a.out
+            47k --file size
+
+   >>cp a.out a.out_backup
+   >>strip a.out             ->All symbol tables present in this are stripped out
+   >>ls -lah a.out
+          15k
+  >>nm a.out 
+     no symbol table
+
+
+
+
+
+8.Accessing private variables:
+  ---------------------------
+
+Eg:
+#include<iostream>
+using namespace std;
+class Test
+{
+   private:
+    int _x{10};
+    int _y{11};
+
+};
+int main()
+{
+ Test *t=new Test;
+ int *p=(int*)t;
+ cout<<*p<<endl;
+ p++;
+ cout<<*p<<endl;
+    return 0;
+}
+o/p:
+10
+11
+
+
+NOTE:private is like marked as private for compilation purpose,so it does not mean like we cannot access the private varables even we can access private variable but the thing is only for compilation purposes
+
+
+
+
+
+----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+-----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+
 
                                                                  7 commands every c/c++ programmer should know
+
+*Every C/C++ programmer should know these 7 Commands, especially those who are working on Linux with C/C++
+
+
+
+
 
 
 1. gcc -fPIC -shared hello.cpp -o libhello.so
    >>ls
-     lihello.so ........
+     libhello.so ........
    >>g++  main.cpp -lhello -L.
-   
-2. file executablefilename(a.out) or anyfile  ->It will give information about executable file
 
-3. gdb -tui exec_file -> It enables GDB in text user interface
+
+
+
+   
+2. file executablefilename(a.out) or anyfile  ->It will give some information about executable name what is the executable type and header which is present in this file.
+
+ >>file a.out
+       a.out: ELF 64-bit LSB pie executable, x86-64, version 1 (SYSV), dynamically linked, interpreter /lib64/ld-linux-x86-64.so.2, BuildID[sha1]=9c31a9fa4004c6e051c1b51eaf7742dded972dcf, for GNU/Linux 3.2.0, not stripped
+             ELF ->Executable Linkable format
+             66-bit ->It is executable in 64-bit compiler
+              x86-64 ->Archiecture
+              version
+              Dynamically Linked ............
+
+
+
+3.lld executable_filename  ->which dependices are present in the file.
+
+
+4.gdb -tui <executable_file>  ->It launches the GNU Debugger (GDB) in text user interface (TUI) mode for the executable a.out. 
+
+5.nm <obj file> ->It will provide symbol tables.
+
+6.objdump a.out -f  ->The objdump command is a utility in Unix-like operating systems that displays information about object files
+
+        a.out:     file format elf64-x86-64
+        architecture: i386:x86-64, flags 0x00000150:
+        HAS_SYMS, DYNAMIC, D_PAGED
+        start address 0x00000000000010e0
+
+
+7. objdum a.out -d ->we can we assembly code for all our executables.
+
+8.valgrind ./a.out ->It is a programming tool for memory debugging,memory leak detection, and profiling.
+
+
+
+
+
